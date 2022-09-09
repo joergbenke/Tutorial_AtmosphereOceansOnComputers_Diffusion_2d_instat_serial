@@ -1,9 +1,76 @@
+#
+# CMake file for creating build system for diffusion problem
+#
+
+
+# Define required minimum CMake version
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
-project(diffusion_1d_ftcs LANGUAGES CXX)
 
-add_executable(Diffusion diffusion.cc)
-set_target_properties( Diffusion 
+# Define project name
+project(diffusion_fdm_1d LANGUAGES CXX)
+
+
+#
+# Testing and configuration part
+#
+
+# Testing for operating system
+if( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
+    message( STATUS "Compiling for Linux ...." )
+else()
+    message( STATUS "Configuring on/for ${CMAKE_SYSTEM_NAME}" )
+endif()
+
+# Testing for compiler ID, compiler, etc.
+message( STATUS "Is the C++ compiler loaded? ${CMAKE_CXX_COMPILER_LOADED}" )
+if( CMAKE_CXX_COMPILER_LOADED )
+  message( STATUS "The C++ compiler ID is: ${CMAKE_CXX_COMPILER_ID}" )
+#  message( STATUS "Is the C++ from GNU? ${CMAKE_COMPILER_IS_GNUCXX}" )
+  message( STATUS "The C++ compiler version is: ${CMAKE_CXX_COMPILER_VERSION}" )
+endif()
+
+# Which kind of host processor (e.g. x86_64)
+message( STATUS "The host processor is ${CMAKE_HOST_SYSTEM_PROCESSOR}" ) 
+
+#
+# Compile part
+#
+
+#
+# Add library and set properties (C++ standard) for library files
+
+# Add library files and create static library
+add_library( diffusion_1d STATIC Diffusion_FDM_1d.h Diffusion_FDM_1d.cc )
+
+# Set properties of C++ (Standrad, Extensions, ...)
+set_target_properties( diffusion_1d 
+		      PROPERTIES 
+		      CXX_STANDARD 14 
+		      CXX_EXTENSIONS OFF 
+		      CXX_STANDARD_REQUIRED ON ) 
+
+# Test for Compiler (GCC or Intel) and set appropriate flags for library file compilation
+if( CMAKE_CXX_COMPILER_ID MATCHES GNU )
+    list( APPEND flags_diffusion_1d "-O2" "-ftree-vectorize" "-Wall" )
+endif()
+
+if( CMAKE_CXX_COMPILER_ID MATCHES Intel )
+    list( APPEND flags_diffusion_1d "-O2" "-xhost" "-vec-report" "-Wall" )
+endif()
+
+# Set the compile options for the library files and compile with those flags
+target_compile_options( diffusion_1d PUBLIC ${flags_diffusion_1d} ) 
+
+
+
+#
+# Add executable and set properties (C++ standard) for executable
+# (analogous to library files) 
+
+add_executable( diffusion diffusion.cc )
+
+set_target_properties( diffusion 
 		      PROPERTIES 
 		      CXX_STANDARD 14 
 		      CXX_EXTENSIONS OFF 
@@ -11,50 +78,27 @@ set_target_properties( Diffusion
 
 # or e.g. set( CMAKE_CXX_STANDARD 14)
 
-#
-if( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
-    message( "Compiling for Linux ...." )
-else()
-    message(STATUS "Configuring on/for ${CMAKE_SYSTEM_NAME}")
+if( CMAKE_CXX_COMPILER_ID MATCHES GNU )
+    list( APPEND flags_diffusion "-O2" "-ftree-vectorize" "-Wall" )
 endif()
 
-#
-if(CMAKE_CXX_COMPILER_ID MATCHES GNU)
-message( "GNU" )
-			 list(APPEND CMAKE_CXX_FLAGS "-fno-rtti -fno-exceptions")
-  list(APPEND CMAKE_CXX_FLAGS_DEBUG "-Wsuggest-final-types" "-Wsuggest-final-methods" "-Wsuggest-override")
-  list(APPEND CMAKE_CXX_FLAGS_RELEASE "-O3" "-Wno-unused")
+if( CMAKE_CXX_COMPILER_ID MATCHES Intel )
+    list( APPEND flags_diffusion "-O2" "-xhost" "-vec-report" "-Wall" )
 endif()
 
-#list( APPEND flags "-O1" "Wall" )
-#if( NOT WIN32 )
-#    list( APPEND flags "-Wextra" "-Wpedantic" )
-#endif()
+target_compile_options( diffusion PUBLIC ${flags_diffusion} ) 
 
-target_compile_options( Diffusion PUBLIC "-O1" "-Wall" "-fPIC" )
-message( "C++ compiler flags: ${CMAKE_CXX_FLAGS}" )
-
-#if(NOT CMAKE_BUILD_TYPE)
-#  set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
-#endif()
+# Output of Compile flags for library and Executables
+message( STATUS "C++ compiler flags Library: ${flags_diffusion_1d}")
+message( STATUS "C++ compiler flags Executable: ${flags_diffusion}")
 
 
 #
-if(CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "i386")
-  message(STATUS "i386 architecture detected")
-elseif(CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "i686")
-  message(STATUS "i686 architecture detected")
-elseif(CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "x86_64")
-  message(STATUS "x86_64 architecture detected")
-else()
-  message(STATUS "host processor architecture is unknown")
-endif()
-
+# Linkage part
 #
-message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
-message(STATUS "C++ flags, Debug configuration: ${CMAKE_CXX_FLAGS_DEBUG}")
-message(STATUS "C++ flags, Release configuration: ${CMAKE_CXX_FLAGS_RELEASE}")
-message(STATUS "C++ flags, Release configuration with Debug info: ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
-message(STATUS "C++ flags, minimal Release configuration: ${CMAKE_CXX_FLAGS_MINSIZEREL}")
+# Linkage
+target_link_libraries( diffusion diffusion_1d )
+
+
 

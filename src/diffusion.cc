@@ -1,4 +1,13 @@
 #include <iostream>
+#include <fstream>
+#include <cmath>
+#include <new>
+#include <vector>
+
+#include "Diffusion_FDM_1d.h"
+
+
+//#define DEBUG false
 
 using namespace std;
 
