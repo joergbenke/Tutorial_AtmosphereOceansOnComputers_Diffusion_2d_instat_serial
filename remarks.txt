@@ -1,0 +1,24 @@
+Generate and Build a project
+- cmake -S ./src/ -B ./build
+- cmake --build ./build
+
+Generate and Build a project with specifying Release type
+- cmake -D CMAKE_BUILD_TYPE=Release -S ./src/ -B ./build (other choices are Debug, etc)
+- cmake --build ./build
+
+Generate and Build a project with specifying Generator
+- cmake -G "Unix Makefiles" -S ./src -B ./build
+- cmake --build ./build
+
+- cmake --system-information 
+
+Define Compile Flags
+- cmake -D CMAKE_CXX_FLAGS="-O2 -Wall ...." (kann man auch mit CMakelists.txt mixen)
+- cmake --build ./build
+- cmake --build ./build -- VERBOSE=1 (gibt die Flags zur Buildzeit aus, nicht nur die aus der Kommandozeile)
+
+GEt System OS
+- if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+
+Define explicit a compiler
+- cmake -DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icpc ...
