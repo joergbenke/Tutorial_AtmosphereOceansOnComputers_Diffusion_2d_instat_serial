@@ -1,17 +1,17 @@
-#ifndef DIFFUSION_FDM_1D_H
-#define DIFFUSION_FDM_1D_H
+#ifndef DIFFUSION_FDM_2D_H
+#define DIFFUSION_FDM_2D_H
 
 #include <vector>
 #include <string>
 
-class Diffusion_FDM_1d
+class Diffusion_FDM_2d
 {
 
  public:
 
   // (Standard-)Constructor
   // Old: AdvectionDiffusionReaction_FDM_Jacobi( double epsilon, unsigned long int n, unsigned long int iter ); //: error(epsilon), n(n), n_iter(iter){};
-  Diffusion_FDM_1d( ); 
+  Diffusion_FDM_2d( ); 
   
   // Create and init fields and boundary conditions
   double* createAndInitFields( double *x, double value );

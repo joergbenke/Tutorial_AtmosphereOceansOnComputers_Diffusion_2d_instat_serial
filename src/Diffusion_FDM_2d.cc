@@ -5,12 +5,12 @@
 #include <string>
 #include <vector>
 
-#include "Diffusion_FDM_1d.h"
+#include "Diffusion_FDM_2d.h"
 
 using namespace std;
 
 // Standardconstructor
-Diffusion_FDM_1d::Diffusion_FDM_1d( )  
+Diffusion_FDM_2d::Diffusion_FDM_2d( )  
 {
 
   this->error = 10.0;  
@@ -20,7 +20,7 @@ Diffusion_FDM_1d::Diffusion_FDM_1d( )
 }
   
 // Create and init fields and boundary conditions
-double* Diffusion_FDM_1d::createAndInitFields( double *x, double value )
+double* Diffusion_FDM_2d::createAndInitFields( double *x, double value )
 {
 
   //
@@ -71,7 +71,7 @@ double* Diffusion_FDM_1d::createAndInitFields( double *x, double value )
 
 //
 // Do the iteration in the diffusin case
-unsigned long int Diffusion_FDM_1d::diffusion_ftcs( double *x_new, double *x_old, double *rhs )
+unsigned long int Diffusion_FDM_2d::diffusion_ftcs( double *x_new, double *x_old, double *rhs )
 {
 
   unsigned long int iter{0};
@@ -128,7 +128,7 @@ unsigned long int Diffusion_FDM_1d::diffusion_ftcs( double *x_new, double *x_old
 
 
 // Write data to disk
-int Diffusion_FDM_1d::writeData( double *x )
+int Diffusion_FDM_2d::writeData( double *x )
 {
 
   ofstream jacobi_output_file( "jacobi_output_1.txt" );
@@ -161,7 +161,7 @@ int Diffusion_FDM_1d::writeData( double *x )
 }
 
 // Read the paramters for the numerical discretization from the namelist file
-int Diffusion_FDM_1d::readData( )
+int Diffusion_FDM_2d::readData( )
 {
 
   size_t pos = 0;
@@ -217,7 +217,7 @@ int Diffusion_FDM_1d::readData( )
 }
 
 // Set parameters 
-void Diffusion_FDM_1d::setParameters( std::vector<std::string> lines )
+void Diffusion_FDM_2d::setParameters( std::vector<std::string> lines )
 {
 
   n = stoi( lines.at( 0 ) );
@@ -237,7 +237,7 @@ void Diffusion_FDM_1d::setParameters( std::vector<std::string> lines )
 }
 
 // Calculate FLOPs
-double Diffusion_FDM_1d::calculateFlops( unsigned long int n_iter )
+double Diffusion_FDM_2d::calculateFlops( unsigned long int n_iter )
 {
   
   return  n_iter * ( ( 6+4 ) * (n-2) * (n-2) + 1 );
