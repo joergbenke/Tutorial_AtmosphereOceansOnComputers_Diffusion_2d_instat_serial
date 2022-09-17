@@ -13,9 +13,9 @@ using namespace std;
 Diffusion_FDM_2d::Diffusion_FDM_2d( )  
 {
 
-  this->error = 10.0;  
   this->n = 10;
-  this->n_iter = 100;
+  this->delta_t = 0.2;  
+  this->n_timesteps = 100;
   
 }
   
@@ -75,22 +75,19 @@ unsigned long int Diffusion_FDM_2d::diffusion_ftcs( double *x_new, double *x_old
 {
 
   unsigned long int iter{0};
-  double err_it{10.0};
-  register double sum{0.0};
+
   double h = static_cast<double>( 1 ) / ( n - 1 ); 
   double h_squared = pow( h, 2 );
-  double scaling = static_cast<double> (1) / ( 2 * ( Axx + Ayy ) - c * h_squared ); 
+  double scaling = static_cast<double>( delta_t / h_squared ); 
+
+  cout << "delta_t " << delta_t << " h_squared: " << h_squared << endl;
   
   //
   // Jacobi iteration
   
-  while( ( err_it > error ) && ( iter < n_iter ) )
+  while( iter < n_timesteps )
     {
 
-#if DEBUG
-      cout << "Iteration: " << iter << " " << "Error: " << err_it << endl ; 
-#endif
-      
       //
       // Calculation
 
@@ -99,17 +96,10 @@ unsigned long int Diffusion_FDM_2d::diffusion_ftcs( double *x_new, double *x_old
 	  {
 
 	    //sum = 0.25 * ( x_old[ i*n+(j+1) ] + x_old[ i*n+(j-1) ] + x_old[ (i+1)*n+j ] + x_old[ (i-1)*n+j ] + h_squared*rhs[ i*n+j ]); 
-	    x_new[ i*n+j ] = scaling * ( Axx*x_old[ i*n+(j+1) ] + Axx*x_old[ i*n+(j-1) ] + Ayy*x_old[ (i+1)*n+j ] + Ayy*x_old[ (i-1)*n+j ] + h_squared*rhs[ i*n+j ]); 
+	    x_new[ i * n + j ] = x_old[ i * n + j ] + scaling * ( Axx * ( x_old[ i*n+(j+1) ] + x_old[ i*n+(j-1) ] - 2*x_old[ i*n+j ] ) + Ayy * ( x_old[ (i+1)*n+j ] + x_old[ (i-1)*n+j ] - 2*x_old[ i*n+j ] ) ) + delta_t * rhs[ i*n+j ] + c * delta_t * x_old[ i * n + j ]; 
 
 	  }
 
-      sum = 0.0;
-      for( unsigned long int i = 1; i < n-1; ++i )  
-	for( unsigned long int j = 1; j < n-1; ++j )  
-	  sum += ( x_new[ i*n+j ] - x_old[ i*n+j ] ) * ( x_new[ i*n+j ] - x_old[ i*n+j ] );
-	  
-      err_it = sqrt( sum );
-      sum = 0.0;
       ++iter;
 
       for( unsigned long int i = 1; i < n-1; ++i )  
@@ -117,10 +107,6 @@ unsigned long int Diffusion_FDM_2d::diffusion_ftcs( double *x_new, double *x_old
 	  x_old[ i*n+j ] = x_new[ i*n+j ]; 
 
     }
-
-#if DEBUG
-  cout << "Iteration: " << iter << " " << "Error: " << err_it << endl ; 
-#endif
 
   return iter;
 
@@ -221,15 +207,15 @@ void Diffusion_FDM_2d::setParameters( std::vector<std::string> lines )
 {
 
   n = stoi( lines.at( 0 ) );
-  n_iter = stoi( lines.at( 1 ) );
-  error = stod( lines.at( 2 ) );
-  
+  delta_t = stod( lines.at( 1 ) );
+  n_timesteps = stoi( lines.at( 2 ) );
+
   Axx = stod( lines.at( 3 ) );
   Ayy = stod( lines.at( 4 ) );
   Azz = stod( lines.at( 5 ) );
   c = stod( lines.at( 6 ) );
   
-  cout << "n = " << n << "\n n_iter = " << n_iter << "\n error = " << error << endl;
+  cout << "n = " << n << "\n n_timesteps = " << n_timesteps << " delta_t = " << delta_t << endl;
   cout << "Axx = " << Axx << "\n Ayy = " << Ayy << "\n Azz = " << Azz << "\nc = " << c << endl;
 
   return;
@@ -237,9 +223,9 @@ void Diffusion_FDM_2d::setParameters( std::vector<std::string> lines )
 }
 
 // Calculate FLOPs
-double Diffusion_FDM_2d::calculateFlops( unsigned long int n_iter )
+double Diffusion_FDM_2d::calculateFlops( unsigned long int n_timesteps )
 {
   
-  return  n_iter * ( ( 6+4 ) * (n-2) * (n-2) + 1 );
+  return  n_timesteps * ( ( 6+4 ) * (n-2) * (n-2) + 1 );
   
 }

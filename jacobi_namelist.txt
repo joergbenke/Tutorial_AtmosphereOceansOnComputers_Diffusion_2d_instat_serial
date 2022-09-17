@@ -1,7 +1,7 @@
 n: 101
-number iterations: 10000
-epsilon: 0.01
-diffusion coefficient xx: 200.0
-diffusion coefficient yy: 2.0
-diffusion coefficient zz: 2.0
-reaction coefficient: -100.0
+delta_t: 0.02 
+number time steps: 10000
+diffusion coefficient xx: 0.0001
+diffusion coefficient yy: 0.0001
+diffusion coefficient zz: 0.0001
+reaction coefficient: 0.0

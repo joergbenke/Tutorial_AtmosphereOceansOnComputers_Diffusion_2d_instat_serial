@@ -35,13 +35,14 @@ class Diffusion_FDM_2d
 private:
 
   unsigned long int n;       // Number of mesh nodes in one direction
-  unsigned long int n_iter;  // Number of iterations of the iteration process
-  double error;              // error value, when the calculation stopps
+  unsigned long int n_timesteps;  // Number of iterations of the iteration process
 
   double Axx; // Diffusioncoefficient xx direction
   double Ayy; // Diffusioncoefficient yy direction
   double Azz; // Diffusioncoefficient zz direction
   double c; // Reactioncoefficient
+
+  double delta_t;
   
 };
 
