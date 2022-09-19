@@ -1,7 +1,7 @@
 n: 101
-delta_t: 0.02 
-number time steps: 10000
-diffusion coefficient xx: 0.0001
-diffusion coefficient yy: 0.0001
-diffusion coefficient zz: 0.0001
+delta_t: 0.0000005 
+number time steps: 10000000
+diffusion coefficient xx: 30
+diffusion coefficient yy: 30
+diffusion coefficient zz: 30
 reaction coefficient: 0.0

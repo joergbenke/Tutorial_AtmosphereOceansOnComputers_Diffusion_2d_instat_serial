@@ -223,9 +223,9 @@ void Diffusion_FDM_2d::setParameters( std::vector<std::string> lines )
 }
 
 // Calculate FLOPs
-double Diffusion_FDM_2d::calculateFlops( unsigned long int n_timesteps )
+double Diffusion_FDM_2d::calculateFlops( )
 {
   
-  return  n_timesteps * ( ( 6+4 ) * (n-2) * (n-2) + 1 );
+  return  n_timesteps * ( ( 6+8 ) * (n-2) * (n-2) );
   
 }

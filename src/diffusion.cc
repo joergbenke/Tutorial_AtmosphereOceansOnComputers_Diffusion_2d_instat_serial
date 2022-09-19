@@ -44,8 +44,8 @@ int main( int argc, char **argv )
 
   start = clock();
 
-  x_new = adr.createAndInitFields( x_new, 0.1 ); // Create and init new mesh with 0 
-  x_old = adr.createAndInitFields( x_old, 0.1 ); // Create and init old mesh with 0
+  x_new = adr.createAndInitFields( x_new, 0.0 ); // Create and init new mesh with 0 
+  x_old = adr.createAndInitFields( x_old, 0.0 ); // Create and init old mesh with 0
   rhs   = adr.createAndInitFields( rhs, 0.90 );  // Create and init right hand side
 
   end = clock();
@@ -59,7 +59,7 @@ int main( int argc, char **argv )
   start = clock();
   
   unsigned long int n_iterations = adr.diffusion_ftcs( x_new, x_old, rhs ); // Calculate the values in the mesh points with jacobi 
-  double flops = adr.calculateFlops( n_iterations ); // Calculate the number of FLOPs of jacobi discretization
+  double flops = adr.calculateFlops( ); // Calculate the number of FLOPs of jacobi discretization
 
   end = clock();
   elapsed_time = calc_elapsed_time( start, end ); // Calculate elapsed time for jacobi discrtization 

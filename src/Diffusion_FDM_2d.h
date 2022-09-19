@@ -29,7 +29,7 @@ class Diffusion_FDM_2d
   void setParameters( std::vector<std::string> lines );
 
   // Caclculations of FLOPs
-  double calculateFlops( unsigned long int );
+  double calculateFlops( ); // unsigned long int );
 
   
 private:
