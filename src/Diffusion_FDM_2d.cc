@@ -39,10 +39,12 @@ double* Diffusion_FDM_2d::createAndInitFields( double *x, double value )
       exit( 1 );
 	
     }
-    
+
+  size_t size_n_2d{n*n}; 
   //
   // Create and init problem
-  for( unsigned long int i = 0; i < n * n; ++i )
+
+  for( unsigned long int i = 0; i < size_n_2d; ++i )
     x[ i ] = value;
     
   //
