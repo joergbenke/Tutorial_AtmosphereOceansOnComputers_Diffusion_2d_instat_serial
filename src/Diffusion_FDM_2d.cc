@@ -119,7 +119,7 @@ unsigned long int Diffusion_FDM_2d::diffusion_ftcs( double *x_new, double *x_old
 int Diffusion_FDM_2d::writeData( double *x )
 {
 
-  ofstream jacobi_output_file( "jacobi_output_1.txt" );
+  ofstream jacobi_output_file( "../output/jacobi_output_1.txt" );
 
   //
   // Write to the file
@@ -154,7 +154,7 @@ int Diffusion_FDM_2d::readData( )
 
   size_t pos = 0;
 
-  string filename{"jacobi_namelist.txt"};
+  string filename{"../input/jacobi_namelist.txt"};
   string line{};
   string del=":";
   string token;
